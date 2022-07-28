@@ -1,4 +1,5 @@
 import { Component } from "react";
+
 import { FiSearch } from "react-icons/fi";
 import {toast } from 'react-toastify';
 
@@ -13,47 +14,44 @@ export class SearchBar extends Component {
     
     handleNameChange = e => {
         this.setState({ itemName: e.currentTarget.value.toLowerCase() });
-
     };
 
    handleSubmit = e => {
        e.preventDefault();
-       
+
        if (this.state.itemName.trim()==='') {
-        toast.error('Введите корректное значение!', {
+        return toast.error('Введите корректное значение!', {
             position: "top-right",
             autoClose: 3000,
             });
-        return
        };
 
        this.props.onSubmit(this.state.itemName);
        this.setState({itemName:''})
     };
+
     render() {
         return (
             <Searchbar className="Searchbar">
-              
                 <SearchForm
-                    className="form"
-                    onSubmit={this.handleSubmit}
-                >
-                    <SearchFormBtn type="submit" className="button">
-                        <FiSearch></FiSearch>
-                        <SearchFormBtnLabel className="button-label">Search</SearchFormBtnLabel>
-                    </SearchFormBtn>
+                className="form"
+                onSubmit={this.handleSubmit}>
+                <SearchFormBtn type="submit" className="button">
+                    <FiSearch/>
+                    <SearchFormBtnLabel className="button-label">Search</SearchFormBtnLabel>
+                </SearchFormBtn>
 
-                    <SearchFormInput
-                        className="input"
-                        type="text"
-                        autoComplete="off"
-                        autoFocus
-                        placeholder="Search images"
-                        value={this.state.itemName}
-                        onChange={this.handleNameChange}
-                    />
+                <SearchFormInput
+                    className="input"
+                    type="text"
+                    autoComplete="off"
+                    autoFocus
+                    placeholder="Search images"
+                    value={this.state.itemName}
+                    onChange={this.handleNameChange}/>
                 </SearchForm>
             </Searchbar>
         )
     }
 };
+

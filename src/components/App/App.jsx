@@ -8,12 +8,21 @@ import { Modal } from "../Modal/Modal";
 import { Button } from "../Button/Button";
 import { Container } from "./App.styled";
 
- export default class App extends Component {
+ export  class App extends Component {
   state={
-    itemName:''
- }
+    itemName: '',
+    hits:[]
+  }
+   
+   componentDidUpdate(prevProps, prevState) {
+     if (prevState.itemName !== this.state.itemName) {
+       fetch(`https://pixabay.com/api/?key=27652237-fecf1e648e251b2f1d2bb2568&q=${this.state.itemName}&page=1&image_type=photo&orientation=horizontal&per_page=12`)
+         .then(res => res.json())
+         .then(({ hits })=>this.setState({hits}))
+     }
+   }
    handleFormSubmit = itemName => {
-     this.setState({ itemName:itemName });
+       this.setState({ itemName })  
    };
  
    render() {
@@ -27,8 +36,11 @@ import { Container } from "./App.styled";
                 autoClose={3000}
                 closeOnClick
                 />
-         <Modal></Modal>
-         <ImageGallery></ImageGallery>
+         <Modal/>
+         <ImageGallery
+           itemName={this.state.itemName}
+            hits={this.state.hits}>
+         </ImageGallery>
          <Button></Button>
        </Container>
      );

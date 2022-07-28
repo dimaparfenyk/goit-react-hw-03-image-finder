@@ -1,8 +1,10 @@
 import React from "react";
-import { GalleryEl, ImgGalleryItemImg } from "./ImageGalleryItem.styled"
+// import PropTypes from 'prop-types';
+import { GalleryItem, ImgItem } from "./ImageGalleryItem.styled"
 
-export const ImageGalleryItem = () => {
-    return(<GalleryEl className="gallery-item">
-  <ImgGalleryItemImg src="" alt="" />
-</GalleryEl>)
-}
+export const ImageGalleryItem = ({webformatURL}) => {
+ return (<GalleryItem className="gallery-item">
+   <ImgItem src={ webformatURL}/>
+  </GalleryItem>)
+};
+
