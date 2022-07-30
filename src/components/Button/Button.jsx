@@ -1,7 +1,7 @@
 import React from "react";
-import { LoadMoreBtn } from "./Button.styled";
+import { Button} from "./Button.styled";
 
-export const Button = ({onLoadMore}) => {
-    return (<LoadMoreBtn type="button" onClick={onLoadMore}>Load More</LoadMoreBtn>
+export const LoadMoreBtn = ({onClick}) => {
+    return (<Button type="button" onClick={onClick}>Load More</Button>
     );
 }

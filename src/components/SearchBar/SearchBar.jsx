@@ -1,7 +1,8 @@
 import { Component } from "react";
 
 import { FiSearch } from "react-icons/fi";
-import {toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+
 
 
 import { Searchbar, SearchForm, SearchFormBtn,SearchFormBtnLabel, SearchFormInput } from "./SearchBar.styled";
@@ -16,17 +17,20 @@ export class SearchBar extends Component {
         this.setState({ itemName: e.currentTarget.value.toLowerCase() });
     };
 
-   handleSubmit = e => {
-       e.preventDefault();
+    handleSubmit = e => {
+        const { itemName} = this.state;
+        const { onSubmit } = this.props;
 
-       if (this.state.itemName.trim()==='') {
-        return toast.error('Введите корректное значение!', {
+        e.preventDefault();
+
+        if (itemName.trim()==='') {
+          return toast.warn('Query is empty. Please write something!', {
             position: "top-right",
-            autoClose: 3000,
-            });
-       };
-
-       this.props.onSubmit(this.state.itemName);
+            autoClose: 4000,
+        });
+        };
+        
+       onSubmit(itemName);
        this.setState({itemName:''})
     };
 
@@ -50,6 +54,7 @@ export class SearchBar extends Component {
                     value={this.state.itemName}
                     onChange={this.handleNameChange}/>
                 </SearchForm>
+                
             </Searchbar>
         )
     }

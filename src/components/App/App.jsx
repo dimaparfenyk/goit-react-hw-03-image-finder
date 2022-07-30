@@ -1,78 +1,125 @@
 import  { Component } from "react";
-import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
-import { SearchApi } from "fetchApi/fetch";
+import searchImg from "fetchApi/fetch";
+
 import { SearchBar } from "../SearchBar/SearchBar";
 import { ImageGallery } from "../ImageGallery/ImageGallery";
 import { Modal } from "../Modal/Modal";
-import { Button } from "../Button/Button";
+import { LoadMoreBtn } from "components/Button/Button";
 import { Loader } from "components/Loader/Loader";
 import { Container } from "./App.styled";
 
- export  class App extends Component {
-  state={
+export class App extends Component {
+  state = {
     itemName: '',
     hits: [],
-    totalHits:0,
+    totalHits: 0,
     page: 1,
     preLoading: false,
-    error:null,
+    showModal: false,
+    biggerImageUrl: '',
+    tag:'image',
   }
    
-   componentDidUpdate(_, prevState) {
-     const {itemName,page}=this.state
-     console.log('outside')
-     console.log(SearchApi())
-     if (prevState.itemName !== itemName && prevState.page!==page) {
-      console.log('inside')
-       this.setState({ preLoading: true });
-    
-        SearchApi(itemName, page).then(({ hits, totalHits }) => {
-             console.log('first then')
-          this.setState({ totalHits:totalHits});
-          if (prevState.page !== page) {
+  componentDidUpdate(_, prevState) {
+    const prevName = prevState.itemName;
+    const currentName = this.state.itemName;
+    const prevPage = prevState.page;
+    const currentPage = this.state.page;
+
+    if (prevName !== currentName) {
+      this.setState({ page: 1 });
+    }
+
+    if (prevName !== currentName ||
+      prevPage !== currentPage) {
+      this.setState({ preLoading: true });
+       
+      searchImg(currentName, currentPage)
+        .then(({ hits, totalHits }) => {
+      
+          this.setState({ totalHits });
+          
+          if (prevName === currentName) {
             this.setState(prevState => ({
               hits: [...prevState.hits, ...hits],
             }));
           }
-          if (prevState.itemName !== itemName) {
-            this.setState({ hits:hits });
+          if (prevName !== currentName) {
+            this.setState({ hits });
           }
         })
-        .catch(error =>this.setState({error}))
-        .finally(()=>this.setState({ preLoading:false}))
-     }
-   }
-
-   handleFormSubmit = itemName => {
-       this.setState({ itemName })  
-   }
-   
-   onLoadMore = () => {
-     this.setState(prevState => ({ page: prevState.page + 1 }));
+        .catch(error => toast.error(error.message, {
+          position: 'top-right',
+          autoClose: 4000,
+          closeOnClick: true
+            
+        }))
+        .finally(() => this.setState({ preLoading: false }));
+    }
+    if (this.state.hits.length>=this.state.totalHits && this.state.hits.length!==0) {
+      toast('There are no more pictures with such query!', {
+        position: 'top-right',
+        autoClose: 4000,
+        closeOnClick: true,
+      });
+    }
   };
- 
-   render() {
-     const { itemName, hits, preLoading } = this.state;
+
+  onLoadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1
+    }
+    ));
+  };
+
+  handleFormSubmit = name => {
+    this.setState({
+      itemName: name,
+      page: 1,
+      hits: [],
+    })
+  };
+
+  toggleModal = () => {
+     this.setState(({ showModal }) => (
+       {
+         showModal: !showModal
+       }));
+   };
+  
+  openModal = e => {
+    this.setState({
+      biggerImageUrl: e.currentTarget.src,
+      alt: e.target.alt
+    })
+    this.toggleModal();
+  };
+
+  render() {
+    const {itemName, hits,totalHits, preLoading, showModal, biggerImageUrl, tag } = this.state;
      
-     return (
-       <Container>
-         <SearchBar
-           onSubmit={this.handleFormSubmit} />
-         
-         <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              closeOnClick/>
-         <Modal/>
-         <ImageGallery
-            itemName={itemName}
-            hits={hits}/>
-          {!hits.length ||
-           <Button onClick={this.onLoadMore} />}
-         {preLoading && <Loader/>}
-       </Container>
-     );
-   }
+    return (
+      <Container>
+        <SearchBar totalHits={totalHits} onSubmit={this.handleFormSubmit} />
+        <ToastContainer/>
+        {!showModal|| <Modal/>}
+        <ImageGallery
+          itemName={itemName}
+          hits={hits}
+          openModal={this.openModal} />
+        {hits.length===0 || hits.length>=totalHits || <LoadMoreBtn onClick={this.onLoadMore} />}
+        {preLoading && <Loader />}
+        {showModal && (<Modal
+          onClose={this.toggleModal}
+          bigImage={biggerImageUrl}
+          tag={tag}
+          />
+        )}
+      </Container>
+    )
+  }
 }
+
