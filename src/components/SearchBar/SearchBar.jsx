@@ -2,7 +2,7 @@ import { Component } from "react";
 
 import { FiSearch } from "react-icons/fi";
 import { toast } from 'react-toastify';
-
+import PropTypes from 'prop-types';
 
 
 import { Searchbar, SearchForm, SearchFormBtn,SearchFormBtnLabel, SearchFormInput } from "./SearchBar.styled";
@@ -38,25 +38,29 @@ export class SearchBar extends Component {
         return (
             <Searchbar className="Searchbar">
                 <SearchForm
-                className="form"
-                onSubmit={this.handleSubmit}>
-                <SearchFormBtn type="submit" className="button">
-                    <FiSearch/>
-                    <SearchFormBtnLabel className="button-label">Search</SearchFormBtnLabel>
-                </SearchFormBtn>
+                    className="form"
+                    onSubmit={this.handleSubmit}>
+                    <SearchFormBtn type="submit" className="button">
+                        <FiSearch />
+                        <SearchFormBtnLabel className="button-label">Search</SearchFormBtnLabel>
+                    </SearchFormBtn>
 
-                <SearchFormInput
-                    className="input"
-                    type="text"
-                    autoComplete="off"
-                    autoFocus
-                    placeholder="Search images"
-                    value={this.state.itemName}
-                    onChange={this.handleNameChange}/>
+                    <SearchFormInput
+                        className="input"
+                        type="text"
+                        autoComplete="off"
+                        autoFocus
+                        placeholder="Search images"
+                        value={this.state.itemName}
+                        onChange={this.handleNameChange} />
                 </SearchForm>
                 
             </Searchbar>
-        )
+        );
     }
 };
 
+SearchBar.propTypes ={
+    onSubmit: PropTypes.func.isRequired,
+    totalHits:PropTypes.number.isRequired,
+};

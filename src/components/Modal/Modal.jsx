@@ -1,5 +1,6 @@
 import {Component} from "react";
 import { Overlay, ModalBox } from "./Modal.styled";
+import PropTypes from 'prop-types';
 
 export class Modal extends Component{
  componentDidMount() {
@@ -23,3 +24,9 @@ render(){
         </Overlay>)
     };
 };
+
+Modal.propTypes = {
+    bigImage: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
+    tag:PropTypes.string,
+}
