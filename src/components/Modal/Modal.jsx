@@ -26,7 +26,7 @@ render(){
 };
 
 Modal.propTypes = {
-    bigImage: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired,
+    bigImage: PropTypes.string,
+    onClose: PropTypes.func,
     tag:PropTypes.string,
 }
